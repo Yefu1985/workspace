@@ -1,7 +1,8 @@
 package main
 
 import (
-	"bufio"
+	"encoding/csv"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -74,19 +75,22 @@ type person struct {
 }
 
 func sparseName(fullName string) (string, string) {
-	invalidNameSuffix := map[string]int{"I":0, "II":0, "III":0, "IV":0, "V":0, "VI":0, "VII":0, "VIII":0, "IX":0, "X":0, "XI":0, "XII":0}
+	invalidNameSuffix := map[string]int{"i":0, "ii":0, "iii":0, "iv":0, "v":0, "vi":0, "vii":0,
+		"viii":0, "ix":0, "x":0, "xi":0, "xiii":0}
 	var (
 		firstName string
 		lastName string
 	)
+	fullName = strings.TrimRight(fullName, " ")
 	fullNameList := strings.Split(fullName, " ")
 	if len(fullNameList) >= 2 {
 		firstName = fullNameList[0]
-		_, ok := invalidNameSuffix[fullNameList[len(fullNameList)-1]]
-		if !ok {
-			lastName = fullNameList[len(fullNameList)-1]
-		} else if len(fullNameList) >= 3 {
-			lastName = fullNameList[len(fullNameList)-2]
+		for i := len(fullNameList)-1; i >= 0 && fullNameList[i] != " " ; i-- {
+			_, ok := invalidNameSuffix[fullNameList[i]]
+			if !ok {
+				lastName = fullNameList[i]
+				break
+			}
 		}
 	}
 	return firstName, lastName
@@ -115,7 +119,9 @@ func extractName(singlePersonInfo string) string {
 			endIndex = i+1
 		}
 		fullName := singlePersonInfo[startIndex:endIndex]
-		strings.TrimSpace(fullName)
+		fullName = strings.Split(fullName, ",")[0]
+		fullName = strings.Split(fullName, ";")[0]
+		fullName = strings.TrimSpace(fullName)
 		return fullName
 	}
 	return ""
@@ -154,19 +160,30 @@ func handleAllPersons(singlePerson *string, p *person) {
 	}
 }
 
-func combinePersonInfo(p *person) string {
-	return p.dob + CSV_DELIMITTER + p.fullName + CSV_DELIMITTER + p.firstName + CSV_DELIMITTER + p.lastName +
-		CSV_DELIMITTER + strconv.Itoa(p.year) + CSV_DELIMITTER + p.month + CSV_DELIMITTER + strconv.Itoa(p.day) +
-		CSV_DELIMITTER + p.description + CSV_DELIMITTER + p.weekday
+func combinePersonInfo(p *person) []string {
+	combinedPersonInfoSlice := []string{}
+	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.dob)
+	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.fullName)
+	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.firstName)
+	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.lastName)
+	combinedPersonInfoSlice = append(combinedPersonInfoSlice, strconv.Itoa(p.year))
+	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.month)
+	combinedPersonInfoSlice = append(combinedPersonInfoSlice, strconv.Itoa(p.day))
+	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.description)
+	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.weekday)
+	return combinedPersonInfoSlice
 }
 
 func main() {
-	dates := map[string]int{"January": 31, "February": 29, "March": 31,
-							"April": 30, "May": 31, "June": 30,
-							"July": 31, "August": 31, "September": 30,
-							"October": 31, "November": 30, "December": 31}
-	//dates := map[string]int{"April":2}
+	//dates := map[string]int{"January": 31, "February": 29, "March": 31,
+	//						"April": 30, "May": 31, "June": 30,
+	//						"July": 31, "August": 31, "September": 30,
+	//						"October": 31, "November": 30, "December": 31}
+	dates := map[string]int{"April":2}
 	startDate := 1
+	file, err := os.OpenFile("test.csv", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	checkError(err)
+	defer file.Close()
 	for month, days := range dates {
 		for day := startDate; day <= days; day++ {
 			URL := generateUrl(month, day)
@@ -181,13 +198,10 @@ func main() {
 					continue
 				}
 				combinedPersonInfo := combinePersonInfo(&p)
-				_ = combinedPersonInfo
-				file, err := os.OpenFile("test.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-				checkError(err)
-				datawriter := bufio.NewWriter(file)
-				_, _ = datawriter.WriteString(combinedPersonInfo + "\n")
-				datawriter.Flush()
-				defer file.Close()
+				fmt.Println(combinedPersonInfo)
+				csvWriter := csv.NewWriter(file)
+				csvWriter.Write(combinedPersonInfo)
+				csvWriter.Flush()
 			}
 		}
 	}

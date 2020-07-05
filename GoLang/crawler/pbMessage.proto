@@ -1,0 +1,19 @@
+syntax = "proto3";
+package main;
+message Person {
+  int32 year = 1;
+  string month = 2;
+  int32 day = 3;
+  string fullName = 4;
+  string 
+  year int
+  month string
+  day int
+  fullName string
+  firstName string
+  lastName string
+  dob string
+  country string
+  description string
+  weekday string
+}

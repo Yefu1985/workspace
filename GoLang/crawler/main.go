@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/csv"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -16,9 +15,7 @@ import (
 const BIRTHS = `<h2>.+Births.+</h2>`
 const DEATHS = `<h2>.+Deaths.+</h2>`
 const HOLIDAYS = `<h2>.+Holidays.+</h2>`
-//const COUNTRIES = map[string]int{}
 const DELIMITTER = "&#8211"
-const CSV_DELIMITTER = ";"
 
 func checkError(err error) {
 	if err != nil {
@@ -175,11 +172,11 @@ func combinePersonInfo(p *person) []string {
 }
 
 func main() {
-	//dates := map[string]int{"January": 31, "February": 29, "March": 31,
-	//						"April": 30, "May": 31, "June": 30,
-	//						"July": 31, "August": 31, "September": 30,
-	//						"October": 31, "November": 30, "December": 31}
-	dates := map[string]int{"April":2}
+	dates := map[string]int{"January": 31, "February": 29, "March": 31,
+							"April": 30, "May": 31, "June": 30,
+							"July": 31, "August": 31, "September": 30,
+							"October": 31, "November": 30, "December": 31}
+	//dates := map[string]int{"April":2}
 	startDate := 1
 	file, err := os.OpenFile("test.csv", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	checkError(err)
@@ -198,7 +195,6 @@ func main() {
 					continue
 				}
 				combinedPersonInfo := combinePersonInfo(&p)
-				fmt.Println(combinedPersonInfo)
 				csvWriter := csv.NewWriter(file)
 				csvWriter.Write(combinedPersonInfo)
 				csvWriter.Flush()

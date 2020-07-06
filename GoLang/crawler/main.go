@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	""
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -111,6 +112,8 @@ func extractName(singlePersonInfo string) string {
 	return ""
 }
 
+//type Person protobuf_pbMessage.Person
+
 func extractDescription(singlePersonInfo string) string {
 	singlePersonDescription := strings.Split(singlePersonInfo, ",")[len(strings.Split(singlePersonInfo, ","))-1]
 	var endIndex int
@@ -126,7 +129,7 @@ func checkWeekday(year int, month string, day int) string {
 	return date.Weekday().String()
 }
 
-func handleAllPersons(singlePerson *string, p Person) {
+func handleAllPersons(singlePerson *string, p protobuf_pbMessage.Person) {
 	singlePersonInfo := strings.Split(*singlePerson, DELIMITTER)
 	if len(singlePersonInfo) == 2 {
 		year := extractYear(singlePersonInfo[0])
@@ -144,7 +147,7 @@ func handleAllPersons(singlePerson *string, p Person) {
 	}
 }
 
-func combinePersonInfo(p Person) []string {
+func combinePersonInfo(p protobuf_pbMessage.Person) []string {
 	combinedPersonInfoSlice := []string{}
 	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.GetDob())
 	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.GetFullName())
@@ -174,7 +177,7 @@ func main() {
 			URLBody := generateURLBody(URL)
 			labelStrings := generateLabelStrings(URLBody, "BIRTHS")
 			for _, singlePerson := range labelStrings {
-				p := Person{
+				p := protobuf_pbMessage.Person {
 					Month: month,
 					Day: int32(day),
 				}

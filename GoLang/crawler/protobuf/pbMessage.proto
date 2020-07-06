@@ -1,0 +1,14 @@
+syntax = "proto3";
+package protobuf.pbMessage;
+message Person {
+  int32 year = 1;
+  string month = 2;
+  int32 day = 3;
+  string fullName = 4;
+  string firstName = 5;
+  string lastName = 6;
+  string dob = 7;
+  string country = 8;
+  string description = 9;
+  string weekday = 10;
+}

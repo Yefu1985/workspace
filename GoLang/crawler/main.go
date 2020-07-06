@@ -58,19 +58,6 @@ func generateLabelStrings(URLBody *string, label string) []string{
 	return strings.Split(labelStrings, "\n")
 }
 
-type person struct {
-	year int
-	month string
-	day int
-	fullName string
-	firstName string
-	lastName string
-	dob string
-	country string
-	description string
-	weekday string
-}
-
 func sparseName(fullName string) (string, string) {
 	invalidNameSuffix := map[string]int{"i":0, "ii":0, "iii":0, "iv":0, "v":0, "vi":0, "vii":0,
 		"viii":0, "ix":0, "x":0, "xi":0, "xiii":0}
@@ -139,35 +126,35 @@ func checkWeekday(year int, month string, day int) string {
 	return date.Weekday().String()
 }
 
-func handleAllPersons(singlePerson *string, p *person) {
+func handleAllPersons(singlePerson *string, p Person) {
 	singlePersonInfo := strings.Split(*singlePerson, DELIMITTER)
 	if len(singlePersonInfo) == 2 {
 		year := extractYear(singlePersonInfo[0])
 		fullName := extractName(singlePersonInfo[1])
 		firstName, lastName := sparseName(fullName)
 		description := extractDescription(singlePersonInfo[1])
-		weekday := checkWeekday(year, p.month, p.day)
-		p.year = year
-		p.fullName = fullName
-		p.firstName = firstName
-		p.lastName = lastName
-		p.dob = strconv.Itoa(year) + "-" + p.month + "-" + strconv.Itoa(p.day)
-		p.description = strings.TrimSpace(description)
-		p.weekday = weekday
+		weekday := checkWeekday(year, p.GetMonth(), int(p.GetDay()))
+		p.Year = int32(year)
+		p.FullName = fullName
+		p.FirstName = firstName
+		p.LastName = lastName
+		p.Dob = strconv.Itoa(year) + "-" + p.GetMonth() + "-" + strconv.Itoa(int(p.GetDay()))
+		p.Description = strings.TrimSpace(description)
+		p.Weekday = weekday
 	}
 }
 
-func combinePersonInfo(p *person) []string {
+func combinePersonInfo(p Person) []string {
 	combinedPersonInfoSlice := []string{}
-	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.dob)
-	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.fullName)
-	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.firstName)
-	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.lastName)
-	combinedPersonInfoSlice = append(combinedPersonInfoSlice, strconv.Itoa(p.year))
-	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.month)
-	combinedPersonInfoSlice = append(combinedPersonInfoSlice, strconv.Itoa(p.day))
-	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.description)
-	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.weekday)
+	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.GetDob())
+	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.GetFullName())
+	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.GetFirstName())
+	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.GetLastName())
+	combinedPersonInfoSlice = append(combinedPersonInfoSlice, strconv.Itoa(int(p.GetYear())))
+	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.GetMonth())
+	combinedPersonInfoSlice = append(combinedPersonInfoSlice, strconv.Itoa(int(p.GetDay())))
+	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.GetDescription())
+	combinedPersonInfoSlice = append(combinedPersonInfoSlice, p.GetWeekday())
 	return combinedPersonInfoSlice
 }
 
@@ -178,7 +165,7 @@ func main() {
 							"October": 31, "November": 30, "December": 31}
 	//dates := map[string]int{"April":2}
 	startDate := 1
-	file, err := os.OpenFile("test.csv", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile("test_pb.csv", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	checkError(err)
 	defer file.Close()
 	for month, days := range dates {
@@ -187,14 +174,15 @@ func main() {
 			URLBody := generateURLBody(URL)
 			labelStrings := generateLabelStrings(URLBody, "BIRTHS")
 			for _, singlePerson := range labelStrings {
-				p := *(new(person))
-				p.day = day
-				p.month = month
-				handleAllPersons(&singlePerson, &p)
-				if len(strconv.Itoa(p.year)) != 4  || len(singlePerson) < 10 {
+				p := Person{
+					Month: month,
+					Day: int32(day),
+				}
+				handleAllPersons(&singlePerson, p)
+				if len(strconv.Itoa(int(p.GetYear()))) != 4  || len(singlePerson) < 10 {
 					continue
 				}
-				combinedPersonInfo := combinePersonInfo(&p)
+				combinedPersonInfo := combinePersonInfo(p)
 				csvWriter := csv.NewWriter(file)
 				csvWriter.Write(combinedPersonInfo)
 				csvWriter.Flush()

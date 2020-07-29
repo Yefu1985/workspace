@@ -7,5 +7,5 @@ import (
 
 func main() {
 	fmt.Println("Here is main!")
-	built_in.Hole1Example1()
+	built_in.Hole2Example1()
 }

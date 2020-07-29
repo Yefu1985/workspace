@@ -96,7 +96,7 @@ OK, 以上资料，如果你刷过题或者正在刷题的话，应该都不会�
 以上就是Golang里面的数据类型，里面有无数个坑可以跳。嗯，我尽可能的把我跳过的坑写出来。
 
 * 1号坑：[Go里面的字符，字符串，编码等一堆乱麻](https://github.com/Yefu1985/workspace/blob/e65b71d4a1ffaf2363c3cdce88e2ec9d0c1cdc85/study/go/data_structure/built_in/hole_1.go#L17)
-* 2号坑：[数组`array`和切片`slice`]()
+* 2号坑：[数组`array`和切片`slice`](https://github.com/Yefu1985/workspace/blob/80741d708177b1b3f4b66349cadc180f97cf6fcb/study/go/data_structure/built_in/hole_2.go#L5)
 * 3号坑：[指针`pointer`]()
 * 4号坑：[结构体`struct`]()
 * 5号坑：[接口`interface`]()

@@ -101,7 +101,8 @@ OK, 以上资料，如果你刷过题或者正在刷题的话，应该都不会�
 * 3号坑：[指针`pointer`](https://github.com/Yefu1985/workspace/blob/ca9a67b5a84ad36b4ed79bb7611f28ad04d2b046/study/go/data_structure/built_in/hole_3.go#L4)
 * 4号坑：[结构体`struct`]()
 * 5号坑：[接口`interface`]()
-* 6号坑： [函数`func`作为传递参数]()
+* 6号坑：[函数`func`作为传递参数 闭包`closure`]()
+* 7号坑：[并发`concurrency`]() 
 
 ### Other Common Data Structures
 

@@ -132,7 +132,9 @@ func Hole5Example1() {
 
 	// 下面是我们的重头戏，Interface的用法。在JAVA中，implement某一个interface是要显性说明的，但是在Go里面不需要。
 	// Interface在Go里面是一种type, 它里面定义了一些func，也就是这个interface的行为；如果某一个类型实现了这个interface里面所有的方法，
-	//那么就说明这个类型实现了这个interface。
+	// 那么就说明这个类型实现了这个interface。
+	// 其实Go里面的所有的type都实现了interface，因为有一个interface的定义是{},里面没有任何func的签名，所以所有的type都可以看做是Interface。
+	// 这个其实和JAVA里面的Object很像，就是所有的数据结构都extend Object。
 	// 我们还是以interface Live()为例吧，假设里面有Eat()和Drink()这两个方法，其中Eat需要有输入，比如说bone, 返回一个int，就是需要的时间seconds；
 	// Drink不需要输入参数，也没有输出参数
 

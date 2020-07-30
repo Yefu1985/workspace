@@ -99,9 +99,9 @@ OK, 以上资料，如果你刷过题或者正在刷题的话，应该都不会�
 * 1号坑：[Go里面的字符，字符串，编码等一堆乱麻](https://github.com/Yefu1985/workspace/blob/e65b71d4a1ffaf2363c3cdce88e2ec9d0c1cdc85/study/go/data_structure/built_in/hole_1.go#L17)
 * 2号坑：[数组`array`和切片`slice`](https://github.com/Yefu1985/workspace/blob/80741d708177b1b3f4b66349cadc180f97cf6fcb/study/go/data_structure/built_in/hole_2.go#L5)
 * 3号坑：[指针`pointer`](https://github.com/Yefu1985/workspace/blob/ca9a67b5a84ad36b4ed79bb7611f28ad04d2b046/study/go/data_structure/built_in/hole_3.go#L4)
-* 4号坑：[结构体`struct`]()
-* 5号坑：[接口`interface`]()
-* 6号坑：[函数`func`作为传递参数 闭包`closure`]()
+* 4号坑：[结构体`struct`](https://github.com/Yefu1985/workspace/blob/c9a5e48a0d9781ecd6a40bde2a59ba51ac3399aa/study/go/data_structure/built_in/hole_4.go#L5)
+* 5号坑：[接口`interface`](https://github.com/Yefu1985/workspace/blob/c9a5e48a0d9781ecd6a40bde2a59ba51ac3399aa/study/go/data_structure/built_in/hole_5.go#L5)
+* 6号坑：[函数`func`作为传递参数 闭包`closure`](https://github.com/Yefu1985/workspace/blob/c9a5e48a0d9781ecd6a40bde2a59ba51ac3399aa/study/go/data_structure/built_in/hole_6.go#L5)
 * 7号坑：[并发`concurrency`]() 
 
 ### Other Common Data Structures

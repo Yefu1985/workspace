@@ -76,7 +76,7 @@ OK
 
 OK, 以上资料，如果你刷过题或者正在刷题的话，应该都不会陌生的。还是那句话，抓紧看完就可以上手了。废话不多说，干就完了。
 
-### BuiltIn Data Structures
+### Go的数据类型的基本认识
 按照我个人的理解，Go里面的数据类型(data type)大概就是这么个结构：
 * 基本类型：可以说是basic，也可以理解是primitive，简单说，这个类型里面存的就是真正的data,又可以分为以下几个分支
     * 数字类numbers: 有`uint`, `int`; 这两个是默认的，还有`int(8, 16, 32, 64)`, `uint(8, 16, 32, 64)`; 有`float32`, `float64`; 还有复数`complex`
@@ -103,6 +103,10 @@ OK, 以上资料，如果你刷过题或者正在刷题的话，应该都不会�
 * 5号坑：[接口`interface`](https://github.com/Yefu1985/workspace/blob/c9a5e48a0d9781ecd6a40bde2a59ba51ac3399aa/study/go/data_structure/built_in/hole_5.go#L5)
 * 6号坑：[函数`func`作为传递参数 闭包`closure`](https://github.com/Yefu1985/workspace/blob/c9a5e48a0d9781ecd6a40bde2a59ba51ac3399aa/study/go/data_structure/built_in/hole_6.go#L5)
 * 7号坑：[并发`concurrency`]() 
+
+以下是一些小用法，就是关于Go里面这些基本data type的一些常规操作。
+所有的代码都在[CommonUsages.go]()中了。尽可能都打一遍吧，嗯，还是那句话，看起来都很容易，都是看一眼就会的，可是呢，看会的不是你的，得你写会的，才是你的，哪怕你照着抄一遍呢，也可以。
+
 
 ### Other Common Data Structures
 

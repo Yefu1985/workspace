@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"reflect"
 	"regexp"
 	"sort"
 	"strconv"
@@ -14,6 +15,39 @@ import (
 /*
 这个文件里面包含了所有Go的基本数据类型的一些常规操作.
  */
+
+type TwoDimensionSlice [][]int
+
+func (twoDimensionSlice TwoDimensionSlice) Len() int {
+	return len(twoDimensionSlice)
+}
+
+func (twoDimensionSlice TwoDimensionSlice) Swap(i int, j int) {
+	twoDimensionSlice[i], twoDimensionSlice[j] = twoDimensionSlice[j], twoDimensionSlice[i]
+}
+
+func (twoDimensionSlice TwoDimensionSlice) Less(i int, j int) bool {
+	return twoDimensionSlice[i][1] < twoDimensionSlice[j][1]
+}
+
+type KeyValue struct {
+	 Key string
+	 Value string
+}
+
+type HashMap []KeyValue
+
+func (hashMap HashMap) Len() int {
+	return len(hashMap)
+}
+
+func (hashMap HashMap) Swap(i, j int) {
+	hashMap[i], hashMap[j] = hashMap[j], hashMap[i]
+}
+
+func (hashMap HashMap) Less(i, j int) bool {
+	return hashMap[i].Value < hashMap[j].Value
+}
 
 func CommonUsages() {
 	fmt.Println("Welcome to the common usages of basic data types in Go.")
@@ -103,7 +137,7 @@ func CommonUsages() {
 		fmt.Printf("The index is %v and the value is %v. \n", i, string(v))
 	}
 
-	// ************** array ********************** //
+	// ************** array & slice ********************** //
 	// array基本信息, 长度，类型, index
 	arr := [...]int{0, 1, 2, 3, 4, 5}
 	fmt.Printf("数组arr %v的长度为%d. \n", arr, len(arr))
@@ -130,32 +164,62 @@ func CommonUsages() {
 	fmt.Printf("Go不能对array进行排序，要换成slice才可以，然后用sort.Ints()就可以了.\n Before sort: %v.\n", arr2)
 	sort.Ints(arr2[:])
 	fmt.Printf("After sort the array becomes: %v. \n", arr2)
-	// 自定义的sort，有几种case是经常用的: 1.按照任意key来sort; 2.按照多个key来sort; 3.按照struct里某个field来sort;
-	// 先定义一个二维数组，然后让它按照第二列来sort
-	arr3 := [5][5]int{
-		{1, 5},
-		{-3, 100},
-		{2, 1},
-		{4, 0},
-		{-5, 4},
+	// 自定义的sort，有几种case是经常碰到的: 1.按照任意key来sort; 2.按照多个key来sort; 3.按照struct里某个field来sort;
+	// 无论是哪一种，其实都可以用sort.Sorts(data Interface)来处理; 这个data接口需要实现三个方法；Len(); Swap(); Less();
+	// 然后才可以调用这个方法; 比如说，我可以把一个二维的array搞成一个新的type;
+	twoDimeensionSlice := TwoDimensionSlice{
+		{1, 2},
+		{-1, 3},
+		{0, 5},
+		{-2, -5},
+		{3, -10},
 	}
-	sort.Ints(arr3[:])
+	sort.Sort(twoDimeensionSlice)
+	fmt.Printf("通过sort.Sort()这样的函数，把twoDimensionSlice放进去就OK了，控制之前的Less函数就可以控制用哪个或者哪些keys来sort了. \n" +
+		"这样的sort之后的结果是: %v", twoDimeensionSlice)
 
-	// array的增删查改
-	// array的合并
-
-	// ************** slice ********************** //
-	// slice基本信息, 长度，类型, index
-	// find & index element in slice
-	// 找出slice中的极值, sum等;
-	// slice的sort，甚至是自定义的sort
-	// slice的增删查改
-	// slice的合并
+	// array的增删查改，用append就可以添加了
+	arr3, arr4 := arr2[1:5], arr2[2:5]
+	arr3 = append(arr3, arr4...) // 这里要用...才可以添加另外一个slice
+	fmt.Printf("arr3的值变成了: %v", arr3)
 
 
 	// ************** map ********************** //
+	// 初始化一个map, 一般都是用make来做的;
+	hashMap := make(map[string]string) // key value的顺序；
+
 	// map的增删查改
-	// map的sort，by keys, by values
-	// map的keys和values
-	// map的合并
+	hashMap["name"] = "puppy"
+	hashMap["breed"] = "labrado"
+	hashMap["color"] = "white"
+	hashMap["age"] = "4"
+	//delete (hashMap, "age")
+
+	value, ok := hashMap["name"]
+	if ok == false {
+		fmt.Println("The key is not in the hashMap.")
+	} else {
+		fmt.Printf("The value for the key is: %v. \n", value)
+	}
+
+	// map的sort，by keys, by values， 这样的sort没啥办法，只能是把keys先sort一遍，然后再去遍历sorted以后的keys了；
+	// 在Go 1.12之后，默认的map的keys就是sorted的了; 但是，不能去iterate，只能是一次性输出;
+	fmt.Println(hashMap)
+
+	// 如果我要强行sort keys呢，或者是要iterate呢，那只能是先把keys都整出来，然后去sort就好了
+	// 得到keys或者values的方法可以通过reflect来实现;
+	keys := reflect.ValueOf(hashMap).MapKeys()
+	fmt.Println(keys)
+	// 貌似没有什么办法可以很快速地得到slice of values; 只能是暴力解法了；
+	// 可是如果要按照values来排序呢? 这个没办法，只能是按照之前的那种type的写法来排序了；用一个struct，里面只有key和value.
+	// 然后遍历原始map，把key value都填充到这个slice of struct里面取；然后把这个slice赋给type HashMap就好了
+
+	var keyValueSlice []KeyValue
+	for key, value := range hashMap {
+		keyValueSlice = append(keyValueSlice, KeyValue{key, value})
+	}
+	mapSortByValue := HashMap(keyValueSlice)
+	sort.Sort(mapSortByValue) // 这时候，sort就已经搞定了，按照value来sort的; 如果一定要输出map的话，那又得重新去赋值一遍了;
+	fmt.Println(mapSortByValue)
+
 }
